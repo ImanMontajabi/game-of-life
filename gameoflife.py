@@ -20,12 +20,9 @@ class Lifegame:
         num_rows = height // cell_size
         self.grids = (
                 [[0] * num_rows] * num_cols, 
-                [[0] * num_rows] * num_cols
-                )
+                [[0] * num_rows] * num_cols)
         self.active_grid = 0
-
-
-        self.game_grid_inactive = []
+        print(self.grids[0])
    
     def draw_grid(self):
         # circle = pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
@@ -52,7 +49,7 @@ class Lifegame:
             if event.type == pygame.QUIT:
                 sys.exit()
 
-   def run(self): 
+    def run(self):
         while True:
             self.handle_events()
             # time checking?
