@@ -24,11 +24,7 @@ class Lifegame:
                 )
         self.active_grid = 0
 
-        self.game_grid_active = [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0]
-        ]
+
         self.game_grid_inactive = []
    
     def draw_grid(self):
