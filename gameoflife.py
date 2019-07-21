@@ -43,6 +43,9 @@ class Lifegame:
 
     def draw_grid(self):
         # circle = pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
+        for col in range(self.num_cols):
+            for row in range(self.num_rows):
+                pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
         pygame.display.update()  # or pygame.display.flip() but they have diffrence .update() can be faster
         
         
