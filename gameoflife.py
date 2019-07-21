@@ -24,10 +24,10 @@ class Lifegame:
                 [[0] * self.num_rows] * self.num_cols, 
                 [[0] * self.num_rows] * self.num_cols]
         self.active_grid = 0
-        self.randomize_grid()
+        self.set_grid()
         print(self.grids[0])
    
-    def randomize_grid(self):
+    def set_grid(self):
         for col in range(self.num_cols):
             for row in range(self.num_rows):
                 self.grids[self.active_grid][col][row] = random.choice([0, 1])
