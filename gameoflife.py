@@ -26,11 +26,18 @@ class Lifegame:
         self.active_grid = 0
         self.set_grid()
         print(self.grids[0])
-   
-    def set_grid(self):
+    # set_grid(0) # all alive
+    # set_grid(1) # all dead
+    # set_grid(None) # random
+    # set_grid() # random
+    def set_grid(self, value=None):
         for col in range(self.num_cols):
             for row in range(self.num_rows):
-                self.grids[self.active_grid][col][row] = random.choice([0, 1])
+                if value is None:
+                    cell_value = random.choice([0, 1])
+                else:
+                    cell_value = value
+                self.grids[self.active_grid][col][row] = cell_value
 
 
 
