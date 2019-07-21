@@ -42,10 +42,16 @@ class Lifegame:
 
 
     def draw_grid(self):
-        # circle = pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
+        self.clear_screen()
+        # self.set_grid()
         for col in range(self.num_cols):
             for row in range(self.num_rows):
-                pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
+                if self.grids[self.active_grid][col][row] == 1:
+                    color = alive_color
+                else:
+                    color = dead_color
+                pygame.draw.circle(self.screen, color, (col * cell_size + (cell_size//2), 
+                                                row *cell_size + (cell_size // 2)), cell_size // 2, 0)
         pygame.display.update()  # or pygame.display.flip() but they have diffrence .update() can be faster
         
         
@@ -58,7 +64,7 @@ class Lifegame:
         # Inspect the current active generation
         # update the inactive grid to store next generation
         # swap out the active grid
-        pass
+        self.set_grid(None)
 
             
     def handle_events(self):
