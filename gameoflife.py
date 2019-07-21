@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 dead_color = 0, 0, 0
 alive_color = 0, 255, 255
@@ -16,14 +17,23 @@ class Lifegame:
         pygame.display.update() #or pygame.display.flip()
 
     def init_grids(self):
-        num_cols = width // cell_size
-        num_rows = height // cell_size
-        self.grids = (
-                [[0] * num_rows] * num_cols, 
-                [[0] * num_rows] * num_cols)
+        self.num_cols = width // cell_size
+        self.num_rows = height // cell_size
+        print("Columns: %d\nRows: %d" %(self.num_cols, self.num_rows))
+        self.grids = [
+                [[0] * self.num_rows] * self.num_cols, 
+                [[0] * self.num_rows] * self.num_cols]
         self.active_grid = 0
+        self.randomize_grid()
         print(self.grids[0])
    
+    def randomize_grid(self):
+        for col in range(self.num_cols):
+            for row in range(self.num_rows):
+                self.grids[self.active_grid][col][row] = random.choice([0, 1])
+
+
+
     def draw_grid(self):
         # circle = pygame.draw.circle(self.screen, alive_color, (50, 50), 5, 0)
         pygame.display.update()  # or pygame.display.flip() but they have diffrence .update() can be faster
