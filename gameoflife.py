@@ -44,8 +44,7 @@ class Lifegame:
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 self.grids[row][col] = random.randint(0, 1)
-
-        print(self.grids) 
+                 
 
 
     def draw_grid(self):
