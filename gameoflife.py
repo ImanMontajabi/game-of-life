@@ -23,6 +23,10 @@ class Lifegame:
         self.grids = [
                 [[0] * self.num_rows] * self.num_cols, 
                 [[0] * self.num_rows] * self.num_cols]
+        # self.grids = []
+        # rows = []
+
+
         self.active_grid = 0
         self.set_grid()
         print(self.grids[0])
@@ -34,7 +38,7 @@ class Lifegame:
         for col in range(self.num_cols):
             for row in range(self.num_rows):
                 if value is None:
-                    cell_value = random.choice([0, 1])
+                    cell_value = random.randint(0, 1)
                 else:
                     cell_value = value
                 self.grids[self.active_grid][col][row] = cell_value
@@ -43,7 +47,6 @@ class Lifegame:
 
     def draw_grid(self):
         self.clear_screen()
-        # self.set_grid()
         for col in range(self.num_cols):
             for row in range(self.num_rows):
                 if self.grids[self.active_grid][col][row] == 1:
@@ -81,8 +84,9 @@ class Lifegame:
             # time checking?
             self.update_generation()
             self.draw_grid()
-
+            pygame.time.delay(300)
 
 if __name__ == "__main__":
     game = Lifegame()
     game.run()
+    
