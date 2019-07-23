@@ -20,12 +20,16 @@ class Lifegame:
         self.num_cols = width // cell_size
         self.num_rows = height // cell_size
         print("Columns: %d\nRows: %d" %(self.num_cols, self.num_rows))
-        self.grids = [
-                [[0] * self.num_rows] * self.num_cols, 
-                [[0] * self.num_rows] * self.num_cols]
-        # self.grids = []
-        # rows = []
+        # self.grids = [
+        #         [[0] * self.num_rows] * self.num_cols, 
+        #         [[0] * self.num_rows] * self.num_cols]
+        self.grids = []
+        rows = []
+        for row_num in range(self.num_rows):
+            list_of_columns = [0] * self.num_cols
+            rows.append(list_of_columns)
 
+        self.grids.append(rows)
 
         self.active_grid = 0
         self.set_grid()
@@ -35,26 +39,28 @@ class Lifegame:
     # set_grid(None) # random
     # set_grid() # random
     def set_grid(self, value=None):
-        for col in range(self.num_cols):
-            for row in range(self.num_rows):
-                if value is None:
-                    cell_value = random.randint(0, 1)
-                else:
-                    cell_value = value
-                self.grids[self.active_grid][col][row] = cell_value
-
+        # for r in range(self.num_rows):
+        #     for c in range(self.num_cols):
+        #         if value is None:
+        #             cell_value = random.randint(0, 1)
+        #         else:
+        #             cell_value = value
+        #         self.grids[self.active_grid][col][row] = cell_value
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                self.grids[self.active_grid][r][c] = random.randint(0, 1)
 
 
     def draw_grid(self):
         self.clear_screen()
-        for col in range(self.num_cols):
-            for row in range(self.num_rows):
-                if self.grids[self.active_grid][col][row] == 1:
+        for c in range(self.num_cols):
+            for r in range(self.num_rows):
+                if self.grids[self.active_grid][r][c] == 1:
                     color = alive_color
                 else:
                     color = dead_color
-                pygame.draw.circle(self.screen, color, (col * cell_size + (cell_size//2), 
-                                                row *cell_size + (cell_size // 2)), cell_size // 2, 0)
+                pygame.draw.circle(self.screen, color, (c * cell_size + (cell_size//2), 
+                                                r *cell_size + (cell_size // 2)), cell_size // 2, 0)
         pygame.display.update()  # or pygame.display.flip() but they have diffrence .update() can be faster
         
         
