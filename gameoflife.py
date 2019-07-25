@@ -14,47 +14,57 @@ MAX_FPS = 8
 class Lifegame:
     def __init__(self):
         pygame.init()
+        self.desired_mili_seconds_between_updates = (1.0 / MAX_FPS) * 1000.0
         self.screen = pygame.display.set_mode(board_size)
-        pygame.display.set_caption("Game of Life") 
+        pygame.display.set_caption("Game of Life")
+        self.last_update_completed = 0 # for frame rate stuff
+        self.active_grid = 0 
+        self.grids = []
+        self.num_cols = width // cell_size
+        self.num_rows = height // cell_size
+        
         self.init_grids()
         self.clear_screen()
         pygame.display.update() #or pygame.display.flip()
-        self.last_update_completed = 0 # for frame rate stuff 
+        self.set_grid()
 
 
     def init_grids(self):
-        self.num_cols = width // cell_size
-        self.num_rows = height // cell_size
-        print("Columns: %d\nRows: %d" %(self.num_cols, self.num_rows))
-        # self.grids = [
-        #         [[0] * self.num_rows] * self.num_cols, 
-        #         [[0] * self.num_rows] * self.num_cols]
-        self.grids = []
-        rows = []
-        for row_num in range(self.num_rows):
-            list_of_columns = [0] * self.num_cols
-            rows.append(list_of_columns)
+        def create_grid():
+            rows = []
+            for row_num in range(self.num_rows):
+                list_of_columns = [0] * self.num_cols
+                rows.append(list_of_columns)
+            return rows
+        
+        grid1 = create_grid() # for active grid
+        grid2 = create_grid() # for deactive grid
+        self.grids.append(grid1) 
+        self.grids.append(grid2) 
 
-        self.grids.append(rows)
-
-        self.active_grid = 0
-        self.set_grid()
-        # print(self.grids[0])
+        
     # set_grid(0) # all alive
     # set_grid(1) # all dead
     # set_grid(None) # random
     # set_grid() # random
     def set_grid(self, value=None):
-        # for r in range(self.num_rows):
-        #     for c in range(self.num_cols):
-        #         if value is None:
-        #             cell_value = random.randint(0, 1)
-        #         else:
-        #             cell_value = value
-        #         self.grids[self.active_grid][col][row] = cell_value
+        """
+        Examples:
+        set_grid(0) # all dead
+        set_grid(1) # all alive
+        set_grid() # random
+        set_grid(None) # random
+
+        :param value:
+        :return:
+        """
         for r in range(self.num_rows):
             for c in range(self.num_cols):
-                self.grids[self.active_grid][r][c] = random.randint(0, 1)
+                if value is None:
+                    cell_value = random.randint(0, 1)
+                else:
+                    cell_value = value
+                self.grids[self.active_grid][r][c] = cell_value
 
 
     def draw_grid(self):
@@ -89,23 +99,25 @@ class Lifegame:
         # if event is keypress of "q" then quit  
             if event.type == pygame.QUIT:
                 sys.exit()
+    
 
-    def run(self):
-        while True:
-            desired_mili_seconds_between_updates = (1.0 / MAX_FPS) * 1000.0
-            self.handle_events()
-            self.update_generation()
-            self.draw_grid()
-            # =========================
-            # cap framerate at 60fps
-            # if time since the last frame draw < 1/60th of a second, sleep for remaining time
+    def cap_frame_rate(self):
             now = pygame.time.get_ticks()
             mili_seconds_since_last_update = now - self.last_update_completed
-            time_to_sleep = desired_mili_seconds_between_updates - mili_seconds_since_last_update
+            time_to_sleep = self.desired_mili_seconds_between_updates - mili_seconds_since_last_update
             if time_to_sleep > 0:
                 pygame.time.delay(int(time_to_sleep))
             self.last_update_completed = now
-            
+    
+    
+    def run(self):
+        while True:
+            self.handle_events()
+            self.update_generation()
+            self.draw_grid()
+            self.cap_frame_rate()
+            # =========================
+           
 
 
 if __name__ == "__main__":
