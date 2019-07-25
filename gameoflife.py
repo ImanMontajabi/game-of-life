@@ -8,7 +8,7 @@ dead_color = 0, 0, 0
 alive_color = 0, 255, 255
 board_size = width, height = 640, 480
 cell_size = 10
-MAX_FPS = 2
+MAX_FPS = 8
 
 
 class Lifegame:
@@ -105,14 +105,6 @@ class Lifegame:
             if time_to_sleep > 0:
                 pygame.time.delay(int(time_to_sleep))
             self.last_update_completed = now
-            # self.last_update_completed = now
-            # now = datetime.datetime.now().microsecond
-            # time_since_last_update = now - self.last_update_completed
-            # print(time_since_last_update)
-            # if (time_since_last_update < micro_seconds_between_update):
-            #     time.sleep((1 / 1000000) * (micro_seconds_between_update - time_since_last_update))
-            # self.last_update_completed = now
-            
             
 
 
