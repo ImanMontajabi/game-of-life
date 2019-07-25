@@ -1,11 +1,15 @@
 import pygame
 import sys
 import random
+import datetime
+import time
 
 dead_color = 0, 0, 0
 alive_color = 0, 255, 255
 board_size = width, height = 640, 480
 cell_size = 10
+MAX_FPS = 2
+
 
 class Lifegame:
     def __init__(self):
@@ -15,6 +19,8 @@ class Lifegame:
         self.init_grids()
         self.clear_screen()
         pygame.display.update() #or pygame.display.flip()
+        self.last_update_completed = 0 # for frame rate stuff 
+
 
     def init_grids(self):
         self.num_cols = width // cell_size
@@ -33,7 +39,7 @@ class Lifegame:
 
         self.active_grid = 0
         self.set_grid()
-        print(self.grids[0])
+        # print(self.grids[0])
     # set_grid(0) # all alive
     # set_grid(1) # all dead
     # set_grid(None) # random
@@ -86,11 +92,29 @@ class Lifegame:
 
     def run(self):
         while True:
+            desired_mili_seconds_between_updates = (1.0 / MAX_FPS) * 1000.0
             self.handle_events()
-            # time checking?
             self.update_generation()
             self.draw_grid()
-            pygame.time.delay(300)
+            # =========================
+            # cap framerate at 60fps
+            # if time since the last frame draw < 1/60th of a second, sleep for remaining time
+            now = pygame.time.get_ticks()
+            mili_seconds_since_last_update = now - self.last_update_completed
+            time_to_sleep = desired_mili_seconds_between_updates - mili_seconds_since_last_update
+            if time_to_sleep > 0:
+                pygame.time.delay(int(time_to_sleep))
+            self.last_update_completed = now
+            # self.last_update_completed = now
+            # now = datetime.datetime.now().microsecond
+            # time_since_last_update = now - self.last_update_completed
+            # print(time_since_last_update)
+            # if (time_since_last_update < micro_seconds_between_update):
+            #     time.sleep((1 / 1000000) * (micro_seconds_between_update - time_since_last_update))
+            # self.last_update_completed = now
+            
+            
+
 
 if __name__ == "__main__":
     game = Lifegame()
