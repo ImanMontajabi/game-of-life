@@ -84,14 +84,35 @@ class Lifegame:
     def clear_screen(self):
         self.screen.fill(dead_color)
     
-   
-    def update_generation(self):
-        # Inspect the current active generation
-        # update the inactive grid to store next generation
-        # swap out the active grid
-        self.set_grid(None)
+    
+    def check_cell_neighbors(self, row_index, col_index):
+        # implement 4 rules, too populated, underpopulated, death, birth
+        # self.grids[self.active_grid][r][c]  #current cell
 
-            
+        num_alive_neighbors = count_live_neighbors()
+
+        # Come to life
+        if self.grids[self.active_grid][row_index][col_index] == 0 and num_alive_neighbors == 3:
+            return 1
+        if num_alive_neighbors > 4:    #Overpopulation  
+            return 0
+        if num_alive_neighbors < 3:  #Underpopulation
+            return 0
+        if (num_alive_neighbors == 3 or num_alive_neighbors == 4) and self.grids[self.active_grid][row_index][col_index] == 1:
+            return 1
+    
+    def update_generation(self):
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                next_gen_state = self.check_cell_neighbors(r, c)
+                self.grids[(self.self.inavtive_grid()] = next_gen_state
+        self.active_grid = self.self.inavtive_grid()
+
+    def inactive_grid(self):
+        return (self.active_grid + 1) % 2
+
+
+
     def handle_events(self):
         for event in pygame.event.get():
         # if event is keypress of "s" then toggle game pause
