@@ -84,12 +84,31 @@ class Lifegame:
     def clear_screen(self):
         self.screen.fill(dead_color)
     
+
+    def get_cell(self, r, c):
+        cell_value = 0
+        try:
+            cell_value = self.grids[self.active_grid][r][c]
+        except:
+            cell_value = 0
+        return cell_value
+
     
     def check_cell_neighbors(self, row_index, col_index):
         # implement 4 rules, too populated, underpopulated, death, birth
         # self.grids[self.active_grid][r][c]  #current cell
-
-        num_alive_neighbors = count_live_neighbors()
+        # Get the number of alive cells surrounding current cell
+        # Check all 8 neighbors, add up alive count
+        num_alive_neighbors = 0
+        num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
+        num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
+        num_alive_neighbors += self.get_cell(row_index - 1, col_index)
+        num_alive_neighbors += self.get_cell(row_index - 1, col_index + 1)
+        num_alive_neighbors += self.get_cell(row_index, col_index - 1)
+        num_alive_neighbors += self.get_cell(row_index, col_index + 1)
+        num_alive_neighbors += self.get_cell(row_index + 1, col_index - 1)
+        num_alive_neighbors += self.get_cell(row_index + 1, col_index)
+        num_alive_neighbors += self.get_cell(row_index + 1, col_index + 1)
 
         # Come to life
         if self.grids[self.active_grid][row_index][col_index] == 0 and num_alive_neighbors == 3:
@@ -100,13 +119,16 @@ class Lifegame:
             return 0
         if (num_alive_neighbors == 3 or num_alive_neighbors == 4) and self.grids[self.active_grid][row_index][col_index] == 1:
             return 1
+        else:
+            return 0
+
     
     def update_generation(self):
-        for r in range(self.num_rows):
-            for c in range(self.num_cols):
+        for r in range(self.num_rows  - 1):
+            for c in range(self.num_cols - 1):
                 next_gen_state = self.check_cell_neighbors(r, c)
-                self.grids[(self.self.inavtive_grid()] = next_gen_state
-        self.active_grid = self.self.inavtive_grid()
+                self.grids[self.inactive_grid()][r][c] = next_gen_state
+        self.active_grid = self.inactive_grid()
 
     def inactive_grid(self):
         return (self.active_grid + 1) % 2
