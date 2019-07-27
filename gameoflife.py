@@ -110,18 +110,20 @@ class Lifegame:
         num_alive_neighbors += self.get_cell(row_index + 1, col_index)
         num_alive_neighbors += self.get_cell(row_index + 1, col_index + 1)
 
-        # Come to life
-        if self.grids[self.active_grid][row_index][col_index] == 0 and num_alive_neighbors == 3:
-            return 1
-        if num_alive_neighbors > 4:    #Overpopulation  
-            return 0
-        if num_alive_neighbors < 3:  #Underpopulation
-            return 0
-        if (num_alive_neighbors == 3 or num_alive_neighbors == 4) and self.grids[self.active_grid][row_index][col_index] == 1:
-            return 1
-        else:
-            return 0
-
+        if self.grids[self.active_grid][row_index][col_index] == 1: # alive
+            if num_alive_neighbors > 3: # Overpopulation
+                return 0
+            if num_alive_neighbors < 2:  #Underpopulation
+                return 0
+            if num_alive_neighbors == 2 or num_alive_neighbors == 3:
+                return 1
+        elif self.grids[self.active_grid][row_index][col_index] == 0: # dead
+            if num_alive_neighbors == 3:
+                return 1 #come to life  
+      
+        return self.grids[self.active_grid][row_index][col_index]
+    
+    
     
     def update_generation(self):
         for r in range(self.num_rows  - 1):
