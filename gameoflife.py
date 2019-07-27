@@ -1,14 +1,13 @@
 import pygame
 import sys
 import random
-import datetime
-import time
+
 
 dead_color = 0, 0, 0
 alive_color = 0, 255, 255
-board_size = width, height = 640, 480
+board_size = width, height = 840, 620
 cell_size = 10
-MAX_FPS = 8
+MAX_FPS = 10
 
 
 class Lifegame:
@@ -47,7 +46,7 @@ class Lifegame:
     # set_grid(1) # all dead
     # set_grid(None) # random
     # set_grid() # random
-    def set_grid(self, value=None):
+    def set_grid(self, value=None,grid=0):
         """
         Examples:
         set_grid(0) # all dead
@@ -64,7 +63,7 @@ class Lifegame:
                     cell_value = random.randint(0, 1)
                 else:
                     cell_value = value
-                self.grids[self.active_grid][r][c] = cell_value
+                self.grids[grid][r][c] = cell_value
 
 
     def draw_grid(self):
@@ -95,11 +94,13 @@ class Lifegame:
 
     
     def check_cell_neighbors(self, row_index, col_index):
+        left_neighbor = row_index
         # implement 4 rules, too populated, underpopulated, death, birth
         # self.grids[self.active_grid][r][c]  #current cell
         # Get the number of alive cells surrounding current cell
         # Check all 8 neighbors, add up alive count
         num_alive_neighbors = 0
+        
         num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
         num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
         num_alive_neighbors += self.get_cell(row_index - 1, col_index)
@@ -110,6 +111,7 @@ class Lifegame:
         num_alive_neighbors += self.get_cell(row_index + 1, col_index)
         num_alive_neighbors += self.get_cell(row_index + 1, col_index + 1)
 
+        # Rules for life and death
         if self.grids[self.active_grid][row_index][col_index] == 1: # alive
             if num_alive_neighbors > 3: # Overpopulation
                 return 0
@@ -126,6 +128,7 @@ class Lifegame:
     
     
     def update_generation(self):
+        self.set_grid(0, self.inactive_grid())
         for r in range(self.num_rows  - 1):
             for c in range(self.num_cols - 1):
                 next_gen_state = self.check_cell_neighbors(r, c)
