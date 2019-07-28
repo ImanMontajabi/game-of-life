@@ -21,7 +21,9 @@ class Lifegame:
         self.grids = []
         self.num_cols = width // cell_size
         self.num_rows = height // cell_size
-        
+        self.paused = False
+        self.gameover = False
+
         self.init_grids()
         self.clear_screen()
         pygame.display.update() #or pygame.display.flip()
@@ -85,7 +87,6 @@ class Lifegame:
     
 
     def get_cell(self, r, c):
-        cell_value = 0
         try:
             cell_value = self.grids[self.active_grid][r][c]
         except:
@@ -142,6 +143,22 @@ class Lifegame:
 
     def handle_events(self):
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:  # stop and start game
+                if event.unicode == 's':
+                    print("Toggling pause")
+                    if self.paused:
+                        self.paused = False
+                    else:
+                        self.paused = True
+                elif event.unicode == 'r':
+                    print("Randomizing grid")
+                    self.active_grid = 0
+                    self.set_grid(None, self.active_grid) # randomize
+                    self.set_grid(0, self.inactive_grid()) # set to 0
+                    self.draw_grid()
+                elif event.unicode == 'q':
+                    print("Exiting")
+                    self.gameover = True
         # if event is keypress of "s" then toggle game pause
         # if event is keypress of "r" then randomize grid
         # if event is keypress of "q" then quit  
@@ -160,12 +177,15 @@ class Lifegame:
     
     def run(self):
         while True:
+            if self.gameover:
+                return
             self.handle_events()
+            if self.paused:
+                continue
             self.update_generation()
             self.draw_grid()
             self.cap_frame_rate()
-            # =========================
-           
+            
 
 
 if __name__ == "__main__":
