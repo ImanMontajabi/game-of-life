@@ -3,24 +3,35 @@ import sys
 import random
 
 
-dead_color = 0, 0, 0
-alive_color = 0, 255, 255
-board_size = width, height = 840, 620
-cell_size = 10
-MAX_FPS = 10
-
-
 class Lifegame:
-    def __init__(self):
+    def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(0, 255, 255),
+        dead_color=(0, 0, 0), max_fps=10):
+        """
+        Initialize grid, set default game state, initialize game screen
+
+        :param screen_width: Game Window width
+        :param screen_height: Game Window height
+        :param cell_size: Diameter of circles
+        :param alive_color: RGB tuple e.g (255, 255, 255) for cells
+        :param dead_color: RGB tuple e.g (255, 255, 255)
+        :param max_fps: frame rate cap for limit game speed
+        """
+
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.cell_size = cell_size
+        self.alive_color = alive_color
+        self.dead_color = dead_color
+
         pygame.init()
-        self.desired_mili_seconds_between_updates = (1.0 / MAX_FPS) * 1000.0
-        self.screen = pygame.display.set_mode(board_size)
+        self.desired_mili_seconds_between_updates = (1.0 / max_fps) * 1000.0
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Game of Life")
         self.last_update_completed = 0 # for frame rate stuff
         self.active_grid = 0 
         self.grids = []
-        self.num_cols = width // cell_size
-        self.num_rows = height // cell_size
+        self.num_cols = self.screen_width // self.cell_size
+        self.num_rows = self.screen_height // self.cell_size
         self.paused = False
         self.gameover = False
 
@@ -31,7 +42,15 @@ class Lifegame:
 
 
     def init_grids(self):
+        """
+        Create and stores the default active and inactive grid
+        :return: None
+        """
         def create_grid():
+            """
+            generate an empty 2 grid
+            :return:
+            """
             rows = []
             for row_num in range(self.num_rows):
                 list_of_columns = [0] * self.num_cols
@@ -44,19 +63,18 @@ class Lifegame:
         self.grids.append(grid2) 
 
         
-    # set_grid(0) # all alive
-    # set_grid(1) # all dead
-    # set_grid(None) # random
-    # set_grid() # random
-    def set_grid(self, value=None,grid=0):
+    def set_grid(self, value=None, grid=0):
         """
-        Examples:
-        set_grid(0) # all dead
-        set_grid(1) # all alive
-        set_grid() # random
-        set_grid(None) # random
+        Set an entire grid at once. set to a single value or random 0/1.
 
-        :param value:
+        Examples:
+            set_grid(0) # all dead
+            set_grid(1) # all alive
+            set_grid() # random
+            set_grid(None) # random
+
+        :param value: Index of grid , for active/inactive  (0 or 1)
+        :param grid: Value to set the cell to (0 or 1)
         :return:
         """
         for r in range(self.num_rows):
@@ -69,24 +87,40 @@ class Lifegame:
 
 
     def draw_grid(self):
+        """
+        Given the grid and cell states, draw the cells on the screen
+
+        :return:
+        """
         self.clear_screen()
         for c in range(self.num_cols):
             for r in range(self.num_rows):
                 if self.grids[self.active_grid][r][c] == 1:
-                    color = alive_color
+                    color = self.alive_color
                 else:
-                    color = dead_color
-                pygame.draw.circle(self.screen, color, (c * cell_size + (cell_size//2), 
-                                                r *cell_size + (cell_size // 2)), cell_size // 2, 0)
+                    color = self.dead_color
+                pygame.draw.circle(self.screen, color, (c * self.cell_size + (self.cell_size//2), 
+                                                r * self.cell_size + (self.cell_size // 2)), self.cell_size // 2, 0)
         pygame.display.update()  # or pygame.display.flip() but they have diffrence .update() can be faster
         
         
     
     def clear_screen(self):
-        self.screen.fill(dead_color)
+        """
+        fil whole screen with dead color
+
+        :return:
+        """
+        self.screen.fill(self.dead_color)
     
 
     def get_cell(self, r, c):
+        """
+        Get the alive/dead (0/1) state of specific cell in active grid
+        :param r:
+        :param c:
+        :return: 0 or 1 depending on state of cell. Defaults to 0 (dead)
+        """
         try:
             cell_value = self.grids[self.active_grid][r][c]
         except:
@@ -95,13 +129,14 @@ class Lifegame:
 
     
     def check_cell_neighbors(self, row_index, col_index):
-        left_neighbor = row_index
-        # implement 4 rules, too populated, underpopulated, death, birth
-        # self.grids[self.active_grid][r][c]  #current cell
-        # Get the number of alive cells surrounding current cell
-        # Check all 8 neighbors, add up alive count
+        """
+        Get the number of alive neighbor cell, and determine the state of the cell
+        for next generation. Determine whether it lives, dies, survives, or is born.
+        :param: row_index: Row number of cell to check
+        :param: col_index: Column number of cell to check
+        :return: The state the cell shoud be in next generation (0 or 1)
+        """
         num_alive_neighbors = 0
-        
         num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
         num_alive_neighbors += self.get_cell(row_index - 1, col_index - 1)
         num_alive_neighbors += self.get_cell(row_index - 1, col_index)
@@ -129,6 +164,11 @@ class Lifegame:
     
     
     def update_generation(self):
+        """
+        Inspect current generation state, prepare nexr generation 
+
+        :return: 
+        """
         self.set_grid(0, self.inactive_grid())
         for r in range(self.num_rows  - 1):
             for c in range(self.num_cols - 1):
@@ -137,11 +177,25 @@ class Lifegame:
         self.active_grid = self.inactive_grid()
 
     def inactive_grid(self):
+        """
+        Simple helper function to get the index of the inactive grid
+        if active grid is 0 wil return 1 and vice-versa
+
+        :return:
+        """
         return (self.active_grid + 1) % 2
 
 
 
     def handle_events(self):
+        """
+        Handle by keypresses
+        s - start/stop (pause) the game
+        q - quit
+        r - randomize grid
+
+        :return:
+        """
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:  # stop and start game
                 if event.unicode == 's':
@@ -167,6 +221,12 @@ class Lifegame:
     
 
     def cap_frame_rate(self):
+        """
+        If game is running too fast and updating frames too frequently,
+        just wait to maintain stable framerate
+
+        :return:
+        """
             now = pygame.time.get_ticks()
             mili_seconds_since_last_update = now - self.last_update_completed
             time_to_sleep = self.desired_mili_seconds_between_updates - mili_seconds_since_last_update
@@ -176,6 +236,11 @@ class Lifegame:
     
     
     def run(self):
+        """
+        Kick off the game and loop forever until quit state
+
+        :return:
+        """
         while True:
             if self.gameover:
                 return
@@ -185,7 +250,7 @@ class Lifegame:
             self.update_generation()
             self.draw_grid()
             self.cap_frame_rate()
-            
+
 
 
 if __name__ == "__main__":
