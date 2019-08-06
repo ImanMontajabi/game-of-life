@@ -8,7 +8,6 @@ class Lifegame:
         dead_color=(0, 0, 0), max_fps=10):
         """
         Initialize grid, set default game state, initialize game screen
-
         :param screen_width: Game Window width
         :param screen_height: Game Window height
         :param cell_size: Diameter of circles
@@ -66,13 +65,11 @@ class Lifegame:
     def set_grid(self, value=None, grid=0):
         """
         Set an entire grid at once. set to a single value or random 0/1.
-
         Examples:
             set_grid(0) # all dead
             set_grid(1) # all alive
             set_grid() # random
             set_grid(None) # random
-
         :param value: Index of grid , for active/inactive  (0 or 1)
         :param grid: Value to set the cell to (0 or 1)
         :return:
@@ -89,7 +86,6 @@ class Lifegame:
     def draw_grid(self):
         """
         Given the grid and cell states, draw the cells on the screen
-
         :return:
         """
         self.clear_screen()
@@ -108,7 +104,6 @@ class Lifegame:
     def clear_screen(self):
         """
         fil whole screen with dead color
-
         :return:
         """
         self.screen.fill(self.dead_color)
@@ -166,7 +161,6 @@ class Lifegame:
     def update_generation(self):
         """
         Inspect current generation state, prepare nexr generation 
-
         :return: 
         """
         self.set_grid(0, self.inactive_grid())
@@ -180,7 +174,6 @@ class Lifegame:
         """
         Simple helper function to get the index of the inactive grid
         if active grid is 0 wil return 1 and vice-versa
-
         :return:
         """
         return (self.active_grid + 1) % 2
@@ -193,7 +186,6 @@ class Lifegame:
         s - start/stop (pause) the game
         q - quit
         r - randomize grid
-
         :return:
         """
         for event in pygame.event.get():
@@ -224,21 +216,19 @@ class Lifegame:
         """
         If game is running too fast and updating frames too frequently,
         just wait to maintain stable framerate
-
         :return:
         """
-            now = pygame.time.get_ticks()
-            mili_seconds_since_last_update = now - self.last_update_completed
-            time_to_sleep = self.desired_mili_seconds_between_updates - mili_seconds_since_last_update
-            if time_to_sleep > 0:
-                pygame.time.delay(int(time_to_sleep))
-            self.last_update_completed = now
+        now = pygame.time.get_ticks()
+        mili_seconds_since_last_update = now - self.last_update_completed
+        time_to_sleep = self.desired_mili_seconds_between_updates - mili_seconds_since_last_update
+        if time_to_sleep > 0:
+            pygame.time.delay(int(time_to_sleep))
+        self.last_update_completed = now
     
     
     def run(self):
         """
         Kick off the game and loop forever until quit state
-
         :return:
         """
         while True:
